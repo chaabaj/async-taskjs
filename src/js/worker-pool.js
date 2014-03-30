@@ -32,9 +32,14 @@ Async.WorkerPool = (function(nbWorker)
     return {
         post : function(task)
         {
+            var parameters;
             var worker = getWorker();
 
-            return worker.post(task);
+            if (arguments.length > 1)
+            {
+                parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
+            }
+            return worker.post(task, parameters);
         }
     };
 });

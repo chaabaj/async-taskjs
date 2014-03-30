@@ -4,22 +4,63 @@
 
 Async.Task = (function (action)
 {
+    this.parameters = [];
+
     var _onFinished = null;
     var _action = action;
-    var _listeners = [];
+    var _listeners = {};
     var _msgQueue = [];
     var _result = null;
+    var _activeWorker = null;
+
 
     return {
+        receiveMsg: function (msg)
+        {
+            var event = _listeners[msg.eventName];
+
+            if (typeof event !== 'undefined')
+            {
+                event.forEach(function(callback)
+                {
+                   callback(msg);
+                });
+            }
+        },
+        unbind: function (eventName, callback)
+        {
+            var index;
+            var event = _listeners[eventName];
+
+            if (typeof event !== 'undefined')
+            {
+                if ((index = event.indexOf(callback)) !== -1)
+                {
+                    event.splice(index, 1);
+                }
+            }
+        },
+        unbindAllByName: function (eventName)
+        {
+            var event = _listeners[eventName];
+
+            if (typeof event !== 'undefined')
+            {
+                _listeners[eventName] = [];
+            }
+        },
         on: function (eventName, callback)
         {
-            var listener;
+            var event = _listeners[eventName];
 
-            listener = {
-              eventName : eventName,
-              callback : callback
-            };
-            _listeners.push(listener);
+            if (typeof event === 'undefined')
+            {
+                _listeners[eventName] = [callback];
+            }
+            else
+            {
+                event.push(callback);
+            }
         },
         emit: function (eventName)
         {
@@ -29,15 +70,22 @@ Async.Task = (function (action)
                 parameters: null
             };
 
-            if (arguments.length > 2)
+            if (_activeWorker === null)
             {
-                msg.parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
-                msg.nbParameters = msg.parameters.length;
-                _msgQueue.push(msg);
+                if (arguments.length > 2)
+                {
+                    msg.parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
+                    msg.nbParameters = msg.parameters.length;
+                    _msgQueue.push(msg);
+                }
+                else
+                {
+                    _msgQueue.push(msg);
+                }
             }
             else
             {
-                _msgQueue.push(msg);
+                _activeWorker.emit(msg);
             }
         },
         then: function (callback)
@@ -51,7 +99,7 @@ Async.Task = (function (action)
                 _onFinished = callback;
             }
         },
-        getAction : function()
+        getAction: function ()
         {
             return _action;
         },
@@ -59,11 +107,7 @@ Async.Task = (function (action)
         {
             return _onFinished;
         },
-        getListeners: function ()
-        {
-            return _listeners;
-        },
-        popMessage : function()
+        popMessage: function ()
         {
             var msg = null;
 
@@ -74,9 +118,13 @@ Async.Task = (function (action)
             }
             return msg;
         },
-        setResult : function(result)
+        setResult: function (result)
         {
             _result = result;
+        },
+        setActiveWorker: function (worker)
+        {
+            _activeWorker = worker;
         }
     };
 });

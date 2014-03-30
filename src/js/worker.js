@@ -11,20 +11,24 @@ Async.Worker = (function ()
     var launchNextTask = function()
     {
         var msg;
+        var taskMsg;
         var task = taskQueue[0];
 
-        task.getListeners().forEach(function(listener)
-        {
-           thread.addEventListener(listener.eventName, listener.callback);
-        });
-        thread.postMessage(task.getAction().toString());
+        console.log(task.parameters);
+        taskMsg = {
+            eventName : 'postTask',
+            code : task.getAction().toString(),
+            params : task.parameters
+        };
+        task.setActiveWorker(self);
+        thread.postMessage(taskMsg);
         while ((msg = task.popMessage()) !== null)
         {
             thread.postMessage(msg);
         }
     };
 
-    thread.addEventListener('onTaskDone', function(result)
+    var onTaskDone = function(msg)
     {
         var task;
         var finishCallback;
@@ -33,32 +37,38 @@ Async.Worker = (function ()
         {
             task = taskQueue[0];
             taskQueue.splice(0, 1);
-            task.getListeners().forEach(function(listener)
-            {
-                thread.removeEventListener(listener.eventName, listener.callback);
-            });
             finishCallback = task.getFinishCallback();
             if (finishCallback !== null)
             {
-                finishCallback(result);
+                finishCallback(msg.result);
             }
             else
             {
-                task.setResult(result);
+                task.setResult(msg.result);
             }
             if (taskQueue.length > 0)
             {
                 launchNextTask();
             }
         }
+    };
+
+    thread.addEventListener('message', function(evt)
+    {
+        var msg = evt.data;
+
+        if (msg.eventName === 'onTaskDone')
+        {
+            onTaskDone(msg);
+        }
         else
         {
-            throw { msg : 'No task for onTaskDone '};
+            task.receiveMsg(msg);
         }
     });
 
     return {
-        post: function (task)
+        post: function (task, parameters)
         {
             var newTask;
 
@@ -70,12 +80,17 @@ Async.Worker = (function ()
             {
                 newTask = task;
             }
+            newTask.parameters = parameters;
             taskQueue.push(newTask);
             if (taskQueue.length > 0)
             {
                 launchNextTask();
             }
             return newTask;
+        },
+        emit : function(msg)
+        {
+            thread.postMessage(msg);
         },
         getNbTask: function ()
         {
