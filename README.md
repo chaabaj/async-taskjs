@@ -2,7 +2,7 @@ async-taskjs
 ============
 
 
-The purpose of the library is to offer a tools for concurrent programming in JavaScript using web worker.
+The purpose of the library is to offer a tools for parallel programming in JavaScript using web worker.
 
 Before launch a example copy the async-thread.js script into the directory it used by worker.
 First step with the library : 
