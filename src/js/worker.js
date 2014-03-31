@@ -82,7 +82,7 @@ Async.Worker = (function ()
             }
             newTask.parameters = parameters;
             taskQueue.push(newTask);
-            if (taskQueue.length > 0)
+            if (taskQueue.length === 1)
             {
                 launchNextTask();
             }
