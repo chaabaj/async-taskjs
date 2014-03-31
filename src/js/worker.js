@@ -3,10 +3,27 @@
  * Created by jalal on 30/03/14.
  */
 
-Async.Worker = (function ()
+/**
+ * @class Async.Worker
+ * @classdesc Worker class his work is to send task in taskQueue to thread and receive message to the thread
+ * It support event msg communication vie emit
+ */
+Async.Worker = (function (asyncScript)
 {
     var self;
-    var thread = new Worker('async-thread.js');
+    /**
+     * @memberof Async.Worker
+     * @private
+     * @instance
+     * @type {Worker}
+     */
+    var thread = new Worker(asyncScript);
+    /**
+     * @memberof Async.Worker
+     * @private
+     * @instance
+     * @type {Array}
+     */
     var taskQueue = [];
 
     var launchNextTask = function()
@@ -95,6 +112,9 @@ Async.Worker = (function ()
         getNbTask: function ()
         {
             return taskQueue.length;
+        },
+        terminate : function() {
+            thread.terminate();
         }
     };
     return self;

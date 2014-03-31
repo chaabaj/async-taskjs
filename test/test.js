@@ -4,16 +4,14 @@
 
 (function ()
 {
-    var workerPool = new Async.WorkerPool(10);
+    var workerPool = new Async.WorkerPool(10, 'async-thread.js');
     var task2;
     var task = new Async.Task(function (thread, param)
     {
-        console.log('Running task 1');
-        console.log('param is : ' + param);
         thread.emit("blabla", 6);
         thread.on('toto', function (evt, param)
         {
-            console.log("from main thread : " + evt.data + ':' + param);
+            param + 3;
         });
         return (param + 2);
 
@@ -26,8 +24,6 @@
 
     task.on('blabla', function (evt, param)
     {
-        console.log(evt.data + ':' + param);
-        console.log("hey salut");
         task.emit('toto', 128);
 
     });
@@ -40,7 +36,6 @@
 
     task2 = workerPool.post(function (thread, param)
     {
-        console.log('Running task 2');
         return param + 5000;
     }, 60);
 

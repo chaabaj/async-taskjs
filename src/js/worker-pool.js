@@ -3,7 +3,7 @@
  * Created by jalal on 30/03/14.
  */
 
-Async.WorkerPool = (function(nbWorker)
+Async.WorkerPool = (function(nbWorker, asyncScript)
 {
     var _workers = [];
 
@@ -13,7 +13,7 @@ Async.WorkerPool = (function(nbWorker)
     }
     for (var i = 0; i < nbWorker; i++)
     {
-        _workers.push(new Async.Worker());
+        _workers.push(new Async.Worker(asyncScript));
     }
 
     var getWorker = function()
@@ -41,6 +41,13 @@ Async.WorkerPool = (function(nbWorker)
                 parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
             }
             return worker.post(task, parameters);
+        },
+        terminate : function(){
+            _workers.forEach(function(worker)
+            {
+               worker.terminate();
+            });
+            _workers = [];
         }
     };
 });
