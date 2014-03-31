@@ -2,30 +2,36 @@
  * Created by jalal on 30/03/14.
  */
 
-
 var Async = {};
 
 Async.currentTask = null;
 
+/**
+ * @class Async.ThreadTask
+ * @classdesc manage a task in a worker with event communication system
+ */
 Async.ThreadTask = function (task)
 {
+    /**
+     * @member _listener
+     * @memberof Async.ThreadTask
+     * @instance
+     * @type {Object}
+     * @desc listener
+     * @private
+     */
     var _listeners = {};
     var _self;
 
     _self = {
-        addListener: function (eventName, callback)
-        {
-            var event = _listeners[eventName];
-
-            if (typeof event === 'undefined')
-            {
-                _listeners[eventName] = [callback];
-            }
-            else
-            {
-                _listeners.push(callback);
-            }
-        },
+        /**
+         * @method emit
+         * @public
+         * @instance
+         * @memberof Async.ThreadTask
+         * @param {String} eventName name of event
+         * @dest emit a event to the ui thread(main thread)
+         */
         emit: function (eventName)
         {
             var msg = {
@@ -35,6 +41,14 @@ Async.ThreadTask = function (task)
 
             postMessage(msg);
         },
+        /**
+         * @instance
+         * @public
+         * @memberof Async.ThreadTask
+         * @method receiveMsg
+         * @param {Object} msg
+         * @desc call a callback if msg event name is listen
+         */
         receiveMsg: function (msg)
         {
             var event = _listeners[msg.eventName];
@@ -47,6 +61,14 @@ Async.ThreadTask = function (task)
                 });
             }
         },
+        /**
+         * @instance
+         * @public
+         * @memberof Async.ThreadTask
+         * @param {String} eventName
+         * @param {Function} callback
+         * @desc listen a event from ui thread(main thread)
+         */
         on: function (eventName, callback)
         {
             var event = _listeners[eventName];
@@ -60,6 +82,12 @@ Async.ThreadTask = function (task)
                 _listeners[eventName] = [callback];
             }
         },
+        /**
+         * @memberof Async.ThreadTask
+         * @public
+         * @instance
+         * @desc do the task and notify the main thread the result of task
+         */
         execute: function ()
         {
             var msg;
@@ -83,7 +111,7 @@ onmessage = function (evt)
 
     if (msg.eventName === 'postTask')
     {
-        Async.currentTask = new Async.ThreadTask(evt.data);
+        Async.currentTask  = new Async.ThreadTask(evt.data);
         Async.currentTask.execute();
     }
     else

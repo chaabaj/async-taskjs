@@ -4,6 +4,8 @@
 
 var Async = {};
 
+Async.currentTask = null;
+
 /**
  * @class Async.ThreadTask
  * @classdesc manage a task in a worker with event communication system
@@ -106,12 +108,11 @@ Async.ThreadTask = function (task)
 onmessage = function (evt)
 {
     var msg = evt.data;
-    var task;
 
     if (msg.eventName === 'postTask')
     {
-        task  = new Async.ThreadTask(evt.data);
-        task.execute();
+        Async.currentTask  = new Async.ThreadTask(evt.data);
+        Async.currentTask.execute();
     }
     else
     {
