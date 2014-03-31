@@ -3,4 +3,8 @@
  */
 'use strict';
 
+/**
+ *
+ * @namespace Async
+ */
 var Async = {};

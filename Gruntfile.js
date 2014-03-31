@@ -59,6 +59,15 @@ module.exports = function (grunt)
 
         },
 
+        jsdoc : {
+            dist : {
+                src : ['<%= dirs.js %>/*.js'],
+                options : {
+                    destination : 'doc'
+                }
+            }
+        },
+
         // Notifications
         notify: {
             js: {

@@ -15,6 +15,7 @@ Async.Worker = (function (asyncScript)
      * @memberof Async.Worker
      * @private
      * @instance
+     * @desc the worker instance
      * @type {Worker}
      */
     var thread = new Worker(asyncScript);
@@ -22,10 +23,18 @@ Async.Worker = (function (asyncScript)
      * @memberof Async.Worker
      * @private
      * @instance
+     * @desc the task queue
      * @type {Array}
      */
     var taskQueue = [];
 
+    /**
+     * @method launchNextTask
+     * @private
+     * @instance
+     * @memberof Async.Worker
+     * @desc method called when a task is in the task queue
+     */
     var launchNextTask = function()
     {
         var msg;
@@ -45,6 +54,14 @@ Async.Worker = (function (asyncScript)
         }
     };
 
+    /**
+     * @private
+     * @method onTaskDone
+     * @instance
+     * @memberof Async.Worker
+     * @desc method called when a task is done
+     * @param msg
+     */
     var onTaskDone = function(msg)
     {
         var task;
@@ -85,6 +102,16 @@ Async.Worker = (function (asyncScript)
     });
 
     var self = {
+        /**
+         * @public
+         * @instance
+         * @method post
+         * @memberof Async.Worker
+         * @desc method to post a task to the worker
+         * @param {Callable} task
+         * @param {Array} parameters
+         * @returns {Async.Task} return the worker posted
+         */
         post: function (task, parameters)
         {
             var newTask;
@@ -105,14 +132,37 @@ Async.Worker = (function (asyncScript)
             }
             return newTask;
         },
+        /**
+         * @public
+         * @instance
+         * @memberof Async.Worker
+         * @desc post a msg to the thread
+         * @method emit
+         * @param {String} msg
+         */
         emit : function(msg)
         {
             thread.postMessage(msg);
         },
+        /**
+         * @public
+         * @instance
+         * @memberof Async.Worker
+         * @method getNbTask
+         * @desc get the number of task to do
+         * @returns {Number}
+         */
         getNbTask: function ()
         {
             return taskQueue.length;
         },
+        /**
+         * @public
+         * @instance
+         * @memberof Async.Worker
+         * @method terminate
+         * @desc terminate the thread
+         */
         terminate : function() {
             thread.terminate();
         }

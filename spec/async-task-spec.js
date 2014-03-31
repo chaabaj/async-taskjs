@@ -99,7 +99,6 @@ describe("async-task", function ()
 
         task.on('blabla', function (evt, param)
         {
-            console.log('OK');
             expect(evt.eventName).toBe('blabla');
             expect(param).toBe(42);
         });
