@@ -4,13 +4,15 @@
 
 (function ()
 {
-    var workerPool = new Async.WorkerPool(4);
+    var workerPool = new Async.WorkerPool(2);
     var task2;
     var task = new Async.Task(function (thread, param)
     {
-        console.log('Im in thread');
-        console.info(thread);
         thread.emit("blabla", 6);
+        thread.on('toto', function(evt, param)
+        {
+           console.log("from main thread : " +  evt.data + ':' + param);
+        });
         return (param + 2);
 
     });
@@ -21,9 +23,10 @@
         console.log(result);
     });
 
-    task.on('blabla', function(evt){
-        console.log(evt.data);
+    task.on('blabla', function(evt, param){
+        console.log(evt.data + ':' + param);
         console.log("hey salut");
+        task.emit('toto', 128);
 
     });
 
@@ -31,14 +34,14 @@
     workerPool.post(task, 50);
     task2 = workerPool.post(function(thread, param)
     {
-       console.log('lol');
+       console.log('trololololololol');
        console.log(param);
        return param + 5000;
     }, 50);
 
     task2.then(function(result)
     {
+        console.log('hey svp');
         console.log(result);
     });
-
 }());

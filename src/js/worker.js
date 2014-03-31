@@ -5,7 +5,7 @@
 
 Async.Worker = (function ()
 {
-    var self = this;
+    var self;
     var thread = new Worker('async-thread.js');
     var taskQueue = [];
 
@@ -67,7 +67,7 @@ Async.Worker = (function ()
         }
     });
 
-    return {
+    var self = {
         post: function (task, parameters)
         {
             var newTask;
@@ -96,6 +96,6 @@ Async.Worker = (function ()
         {
             return taskQueue.length;
         }
-
     };
+    return self;
 });

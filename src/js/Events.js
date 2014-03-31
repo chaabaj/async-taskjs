@@ -17,7 +17,7 @@ Async.Events = function ()
             {
                 event.forEach(function(callback)
                 {
-                    callback(msg);
+                    callback.apply(callback, [msg].concat(msg.data));
                 });
             }
         },

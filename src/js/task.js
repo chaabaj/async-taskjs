@@ -18,17 +18,15 @@ Async.Task = (function (action)
         emit: function (eventName)
         {
             var msg = {
-                name: eventName,
-                nbParameters: 0,
-                parameters: null
+                eventName: eventName,
+                data: null
             };
 
+            msg.data = Array.prototype.slice.call(arguments, 1, arguments.length);
             if (_activeWorker === null)
             {
                 if (arguments.length > 2)
                 {
-                    msg.parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
-                    msg.nbParameters = msg.parameters.length;
                     _msgQueue.push(msg);
                 }
                 else
