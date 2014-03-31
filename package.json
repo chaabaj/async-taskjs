@@ -1,0 +1,37 @@
+{
+  "name": "async-taskjs",
+  "version": "0.1.0",
+  "title": "AsyncTask",
+  "description": "A JavaScript Library for asynchronous task",
+  "author": {
+    "name": "Jalal Chaabane",
+    "email": "jalal.chaabane@gmail.com"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/chaabaj/async-taskjs.git"
+  },
+  "keywords": [
+      "async",
+      "javascript",
+      "library",
+      "thread",
+      "worker"
+  ],
+  "bugs": {
+      "url": "https://github.com/chaabaj/async-taskjs/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "bower": "~1.1.2",
+    "grunt-notify": "~0.2.7",
+    "grunt-jsdoc" : "~0.5.4",
+    "grunt-contrib-uglify": "~0.2.1",
+    "matchdep": "~0.1.2"
+  },
+  "engines": {
+    "node": ">=0.10.17",
+    "npm": ">=1.3.8"
+  }
+}
