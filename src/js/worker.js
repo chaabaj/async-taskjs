@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Created by jalal on 30/03/14.
  */
@@ -14,7 +15,6 @@ Async.Worker = (function ()
         var taskMsg;
         var task = taskQueue[0];
 
-        console.log(task.parameters);
         taskMsg = {
             eventName : 'postTask',
             code : task.getAction().toString(),
@@ -61,9 +61,9 @@ Async.Worker = (function ()
         {
             onTaskDone(msg);
         }
-        else
+        else if (taskQueue.length > 0)
         {
-            task.receiveMsg(msg);
+            taskQueue[0].receiveMsg(msg);
         }
     });
 

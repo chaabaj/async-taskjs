@@ -10,9 +10,8 @@ Async.currentTask = null;
 Async.ThreadTask = function (task)
 {
     var _listeners = {};
-    var _self = this;
 
-    return {
+    var _self = {
         addListener: function (eventName, callback)
         {
             var event = _listeners[eventName];
@@ -29,8 +28,8 @@ Async.ThreadTask = function (task)
         emit : function(eventName, data)
         {
             var msg = {
-                eventName : eventName,
-                data : data
+              eventName : eventName,
+              data : data
             };
 
             postMessage(msg);
@@ -43,7 +42,7 @@ Async.ThreadTask = function (task)
             {
                 event.forEach(function(callback)
                 {
-                    callback(msg);
+                   callback(msg);
                 });
             }
         },
@@ -74,6 +73,7 @@ Async.ThreadTask = function (task)
             postMessage(msg);
         }
     };
+    return _self;
 };
 
 onmessage = function (evt)

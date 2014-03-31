@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Created by jalal on 30/03/14.
  */
@@ -8,60 +10,11 @@ Async.Task = (function (action)
 
     var _onFinished = null;
     var _action = action;
-    var _listeners = {};
     var _msgQueue = [];
     var _result = null;
     var _activeWorker = null;
 
-
-    return {
-        receiveMsg: function (msg)
-        {
-            var event = _listeners[msg.eventName];
-
-            if (typeof event !== 'undefined')
-            {
-                event.forEach(function(callback)
-                {
-                   callback(msg);
-                });
-            }
-        },
-        unbind: function (eventName, callback)
-        {
-            var index;
-            var event = _listeners[eventName];
-
-            if (typeof event !== 'undefined')
-            {
-                if ((index = event.indexOf(callback)) !== -1)
-                {
-                    event.splice(index, 1);
-                }
-            }
-        },
-        unbindAllByName: function (eventName)
-        {
-            var event = _listeners[eventName];
-
-            if (typeof event !== 'undefined')
-            {
-                _listeners[eventName] = [];
-            }
-        },
-        on: function (eventName, callback)
-        {
-            var event = _listeners[eventName];
-
-            if (typeof event === 'undefined')
-            {
-                _listeners[eventName] = [callback];
-            }
-            else
-            {
-                event.push(callback);
-            }
-        },
+    return Async.extend(new Async.Events(), {
         emit: function (eventName)
         {
             var msg = {
@@ -126,5 +79,5 @@ Async.Task = (function (action)
         {
             _activeWorker = worker;
         }
-    };
+    });
 });
