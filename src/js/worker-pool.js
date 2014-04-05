@@ -43,11 +43,15 @@ Async.WorkerPool = (function(nbWorker, asyncScript)
 
         _workers.forEach(function(worker)
         {
-           if (worker.getNbTask() < lessWorker.getNbTask())
+           if (worker.getNbTask() < lessWorker.getNbTask() && worker.isDedicated === false)
            {
                lessWorker = worker;
            }
         });
+        if (lessWorker.isDedicated)
+        {
+            return null;
+        }
         return lessWorker;
     };
 
@@ -56,19 +60,48 @@ Async.WorkerPool = (function(nbWorker, asyncScript)
          * @instance
          * @public
          * @memberof Async.WorkerPool
-         * @method post
-         * @desc post a task to a worker in the worker pool
-         * @param {Callable} task
-         * @returns {*|Task|post|post}
+         * @method importScript
+         * @desc import a script for all worker in worker pool
+         * @param {String} scriptFile
          */
-        post : function(task)
+        importScript : function(scriptFile)
+        {
+            var msg = {
+                eventName : 'importScript',
+                file : scriptFile
+            };
+
+            _workers.forEach(function(worker)
+            {
+                worker.emit(msg);
+            });
+        },
+        /**
+         * @instance
+         * @public
+         * @memberof Async.WorkerPool
+         * @method post
+         * @throw {Object} if all worker are busy by infinite task the method throw an exception
+         * @desc post a task to a worker in the worker pool
+         * @param {Async.Task|Function} task
+         * @returns {Async.Task} the task you have posted
+         */
+        post : function(isInfinite, task)
         {
             var parameters;
             var worker = getWorker();
 
-            if (arguments.length > 1)
+            if (worker === null)
+            {
+                throw {msg : "All worker are dedicated to a infinite task"};
+            }
+            if (arguments.length > 2)
             {
                 parameters = Array.prototype.slice.call(arguments, 1, arguments.length);
+            }
+            if (isInfinite === true)
+            {
+                worker.isDedicated = true;
             }
             return worker.post(task, parameters);
         },

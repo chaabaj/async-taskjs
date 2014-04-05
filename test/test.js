@@ -31,10 +31,10 @@
     // stress test
     for (var i = 0; i < 100; i++)
     {
-        workerPool.post(task, i);
+        workerPool.post(false, task, i);
     }
 
-    task2 = workerPool.post(function (thread, param)
+    task2 = workerPool.post(false, function (thread, param)
     {
         return param + 5000;
     }, 60);

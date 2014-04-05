@@ -11,11 +11,12 @@
 Async.Worker = (function (asyncScript)
 {
     var self;
+
     /**
      * @memberof Async.Worker
      * @private
      * @instance
-     * @desc the worker instance
+     * @desc the web worker instance
      * @type {Worker}
      */
     var thread = new Worker(asyncScript);
@@ -102,6 +103,14 @@ Async.Worker = (function (asyncScript)
     });
 
     var self = {
+        /**
+         * @instance
+         * @memberof Async.Worker
+         * @desc if the worker is dedicated to a task or not
+         * @private
+         * @type {boolean}
+         */
+        isDedicated : false,
         /**
          * @public
          * @instance

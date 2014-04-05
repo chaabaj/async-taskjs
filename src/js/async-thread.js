@@ -114,6 +114,10 @@ onmessage = function (evt)
         Async.currentTask  = new Async.ThreadTask(evt.data);
         Async.currentTask.execute();
     }
+    else if (msg.eventName === 'importScript')
+    {
+        importScripts(msg.file);
+    }
     else
     {
         if (Async.currentTask !== null)

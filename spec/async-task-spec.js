@@ -49,7 +49,7 @@ describe("async-task", function ()
         var task;
         var workerPool = new Async.WorkerPool(8, asyncScript);
 
-        task = workerPool.post(function ()
+        task = workerPool.post(false, function ()
         {
             return 42;
         });
@@ -81,7 +81,7 @@ describe("async-task", function ()
             workerPool.terminate();
         });
 
-        workerPool.post(task);
+        workerPool.post(false, task);
     });
 
     it('post a task and emit data from ui thread to task thread', function ()
@@ -105,7 +105,7 @@ describe("async-task", function ()
 
         task.emit('trololol', 42);
 
-        workerPool.post(task);
+        workerPool.post(false, task);
 
         task.then(function ()
         {
@@ -117,24 +117,55 @@ describe("async-task", function ()
     {
         var workerPool = new Async.WorkerPool(8, asyncScript);
         var i = 0;
-        var task = new Async.Task(function()
+        var task = new Async.Task(function ()
         {
-           return 50;
+            return 50;
         });
 
-        task.then(function()
+        task.then(function ()
         {
             i++;
-            if (i === 100)
+            if (i === 101)
             {
                 expect(100).toBe(100);
+                workerPool.terminate();
             }
         });
 
         for (var j = 0; j < 100; ++j)
         {
-            workerPool.post(task);
+            workerPool.post(false, task);
         }
     });
 
+    it('test of fake infinite task', function ()
+    {
+        var workerPool = new Async.WorkerPool(8, asyncScript);
+        var task;
+
+        task = workerPool.post(true, function()
+        {
+           return 42;
+        });
+
+        task.then(function()
+        {
+            workerPool.terminate();
+        });
+    });
+
+    it('busy all worker with infinite task', function()
+    {
+        var workerPool = new Async.WorkerPool(1, asyncScript);
+        var task = new Async.Task(function()
+        {
+           return 42;
+        });
+
+        workerPool.post(true, task);
+        expect(function()
+        {
+            workerPool.post(true, task);
+        }).toThrow();
+    });
 });
