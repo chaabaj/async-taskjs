@@ -99,8 +99,8 @@ Next we want to pass it parameters, let's go :
     
     workerPool.post(false, function(thread, param)
     {
-        return 42;
-    }).then(function(result)
+        return param;
+    }, 42).then(function(result)
     {
         console.log(42);
         workerPool.terminate();
@@ -108,4 +108,41 @@ Next we want to pass it parameters, let's go :
 }());
 
 ```
+
+As you see in your console it printed 42.
+
+You can add a variable of parameter(The type of parameter must be clonable object, transferrable object or a function) as you see we get the param in the function as 2 parameter because we receive the thread itself in first parameter(an Async.ThreadTask object precisly). We see later what we can do with it.
+
+Now we want to communicate between the async task and the main thread. Let's go :
+
+``` javascript
+
+// We create a new scope to not pollute the global scope
+(function()
+{
+    var nbOfWorker = 2;
+    var workerPool = new Async.WorkerPool(nbOfWorker, 'pathtoyourscript/async-thread.min.js');
+    var task = new Async.Task(function(thread)
+    {
+        thread.on('onReceiveData', function(evt, param)
+        {
+            thread.emit('onResponse', param + 1);
+        };
+    });
+    
+    task.on('onResponse', function(evt, param)
+    {
+        console.log(param);
+    });
+    
+    task.emit('onReceiveData', 42);
+    
+    workerPool.post(false, task);
+}());
+
+```
+
+In your console it printed 43. 
+
+As you see we can communicate between main thread and async-task
 
