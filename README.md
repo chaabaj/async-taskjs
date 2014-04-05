@@ -16,8 +16,8 @@ bower install async-taskjs
 
 or download these scripts at this url : 
 
-[remote-object][script-url]
-[remote-object][thread-script-url]
+[async-task.min.js][script-url]
+[async-thread.min.js][thread-script-url]
 
 [script-url]:https://raw.githubusercontent.com/chaabaj/async-taskjs/master/dist/async-taskjs.min.js
 [thread-script-url]:https://github.com/chaabaj/async-taskjs/blob/master/dist/async-thread.min.js
