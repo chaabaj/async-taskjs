@@ -14,7 +14,7 @@ bower install async-taskjs
 
 ```
 
-or download these scripts at this url : 
+or download these scripts at these url : 
 
 [async-task.min.js][script-url]
 [async-thread.min.js][thread-script-url]
