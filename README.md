@@ -144,5 +144,9 @@ Now we want to communicate between the async task and the main thread. Let's go 
 
 In your console it printed 43. 
 
-As you see we can communicate between main thread and async-task
+As you see we can communicate between main thread and async-task using message communication of web worker that can create good parralel program without care of synchronization mechanism in other language with threading support.
+
+##Conclusion
+
+That we viewed the basic of the library, we seen how write parralel program with it and how using message communication system. The use of the library must be for the long task that need long time of execution like load a large file, process image, some huge computation, raytracing and many i have missed.
 
