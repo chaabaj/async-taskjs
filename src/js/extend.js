@@ -5,10 +5,10 @@
 'use strict';
 /**
  * @function Async.extend
- * @param {Object] parent
- * @param {Object} child
- * @desc merge all child properties in parent
- * @returns {Object}
+ * @param {Object] parent the parent object
+ * @param {Object} child the child object
+ * @desc merge all parent properties in child
+ * @returns {Object} the child object merged with the parent
  */
 Async.extend = function(parent, child)
 {

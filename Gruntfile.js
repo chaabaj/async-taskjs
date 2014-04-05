@@ -41,6 +41,7 @@ module.exports = function (grunt)
                 files: {
                     "<%= dirs.build %>/async-taskjs.min.js": [
                         '<%= dirs.js %>/namespace.js',
+                        '<%= dirs.js %>/timer.js',
                         '<%= dirs.js %>/extend.js',
                         '<%= dirs.js %>/events.js',
                         '<%= dirs.js %>/task.js',

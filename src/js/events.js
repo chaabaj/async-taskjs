@@ -26,7 +26,7 @@ Async.Events = function ()
          * @public
          * @memberof Async.Events
          * @desc search a listener for a msg
-         * @param {Object} msg
+         * @param {{Object}} msg msg you have received
          */
         receiveMsg: function (msg)
         {
@@ -46,8 +46,8 @@ Async.Events = function ()
          * @instance
          * @method unbind
          * @memberof Async.Events
-         * @param {String} eventName
-         * @param {Function} callback
+         * @param {String} eventName the name of the event
+         * @param {Function} callback the callback to unbind
          */
         unbind : function(eventName, callback)
         {
@@ -68,7 +68,7 @@ Async.Events = function ()
          * @method unbindAllByName
          * @memberof Async.Events
          * @desc unbind all listener from an event name
-         * @param {String} eventName
+         * @param {String} eventName the name of the event
          */
         unbindAllByName : function(eventName)
         {
@@ -85,8 +85,8 @@ Async.Events = function ()
          * @method on
          * @desc listen an event
          * @memberof Async.Events
-         * @param {String} eventName
-         * @param {Function} callback
+         * @param {String} eventName the name of the event
+         * @param {Function} callback the callback to bind
          */
         on: function (eventName, callback)
         {

@@ -4,43 +4,21 @@
 
 (function ()
 {
-    var workerPool = new Async.WorkerPool(10, 'async-thread.js');
-    var task2;
-    var task = new Async.Task(function (thread, param)
+    var workerPool = new Async.WorkerPool(1, 'async-thread.js');
+
+    workerPool.importScript('underscore-min.js');
+    workerPool.importScript('');
+    workerPool.post(false, function()
     {
-        thread.emit("blabla", 6);
-        thread.on('toto', function (evt, param)
+        return ["Hello",  "World"];
+    }).then(function(array)
+    {
+        workerPool.post(false, function(thread, array)
         {
-            param + 3;
-        });
-        return (param + 2);
-
-    });
-
-    task.then(function (result)
-    {
-        console.log("Result task 1 : " + result);
-    });
-
-    task.on('blabla', function (evt, param)
-    {
-        task.emit('toto', 128);
-
-    });
-
-    // stress test
-    for (var i = 0; i < 100; i++)
-    {
-        workerPool.post(task, i);
-    }
-
-    task2 = workerPool.post(function (thread, param)
-    {
-        return param + 5000;
-    }, 60);
-
-    task2.then(function (result)
-    {
-        console.log("Result task 2 : " + result);
+            return array.join(',');
+        }, array).then(function(str)
+        {
+            console.log(str);
+        })
     });
 }());

@@ -11,16 +11,6 @@
 Async.Task = (function (action)
 {
     /**
-     * @instance
-     * @public
-     * @member parameters
-     * @desc parameters to bind to the task
-     * @memberof Async.Task
-     * @type {Array}
-     */
-    this.parameters = [];
-
-    /**
      * @public
      * @member _onFinished
      * @memberof Async.Task
@@ -68,6 +58,15 @@ Async.Task = (function (action)
     var _activeWorker = null;
 
     return Async.extend(new Async.Events(), {
+        /**
+         * @instance
+         * @public
+         * @member parameters
+         * @desc parameters to bind to the task
+         * @memberof Async.Task
+         * @type {Array}
+         */
+        parameters : [],
         /**
          * @public
          * @instance
