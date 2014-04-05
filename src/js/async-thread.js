@@ -23,6 +23,22 @@ Async.ThreadTask = function (task)
     var _listeners = {};
     var _self;
 
+    var processParameters = function (parameters)
+    {
+        var str;
+
+        return parameters.map(function (param)
+        {
+            if (param.type === 'function')
+            {
+                str = Array.prototype.join.call(['var fn=', param.data, ';'], '');
+                eval(str);
+                return fn;
+            }
+            return param.data;
+        });
+    };
+
     _self = {
         /**
          * @method emit
@@ -90,11 +106,17 @@ Async.ThreadTask = function (task)
          */
         execute: function ()
         {
+            var str;
             var msg;
             var result;
 
-            eval('var fn=' + task.code + ';');
-            result = fn.apply(fn, [_self].concat(task.params));
+            str = Array.prototype.join.call(['var task_fn=', task.code , ';'], '');
+            eval(str);
+            if (typeof task.params !== 'undefined')
+            {
+                task.params = processParameters(task.params);
+            }
+            result = task_fn.apply(task_fn, [_self].concat(task.params));
             msg = {
                 eventName: 'onTaskDone',
                 result: result
@@ -111,7 +133,7 @@ onmessage = function (evt)
 
     if (msg.eventName === 'postTask')
     {
-        Async.currentTask  = new Async.ThreadTask(evt.data);
+        Async.currentTask = new Async.ThreadTask(evt.data);
         Async.currentTask.execute();
     }
     else if (msg.eventName === 'importScript')

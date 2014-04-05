@@ -143,29 +143,45 @@ describe("async-task", function ()
         var workerPool = new Async.WorkerPool(8, asyncScript);
         var task;
 
-        task = workerPool.post(true, function()
+        task = workerPool.post(true, function ()
         {
-           return 42;
+            return 42;
         });
 
-        task.then(function()
+        task.then(function ()
         {
             workerPool.terminate();
         });
     });
 
-    it('busy all worker with infinite task', function()
+    it('busy all worker with infinite task', function ()
     {
         var workerPool = new Async.WorkerPool(1, asyncScript);
-        var task = new Async.Task(function()
+        var task = new Async.Task(function ()
         {
-           return 42;
+            return 42;
         });
 
         workerPool.post(true, task);
-        expect(function()
+        expect(function ()
         {
             workerPool.post(true, task);
         }).toThrow();
+    });
+
+    it('pass function in parameter', function ()
+    {
+        var workerPool = new Async.WorkerPool(1, asyncScript);
+
+        workerPool.post(false, function(fn)
+        {
+            return fn();
+        }, function()
+        {
+            return 42;
+        }).then(function(result)
+        {
+            expect(result).toBe(42);
+        });
     });
 });
