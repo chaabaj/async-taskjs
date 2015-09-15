@@ -68,13 +68,12 @@ Next we want to post a task to the worker pool. Let's do it :
         return 42;
     }).then(function(result)
     {
-        console.log(42);
+        console.log(result);
         workerPool.terminate();
     });
 }());
 
 ```
-
 
 As you see we calling post method with two parameter and attaching 
 a function to the finish task event(called in main thread).
@@ -102,9 +101,9 @@ Next we want to pass it parameters, let's go :
         return param;
     }, 42).then(function(result)
     {
-        console.log(42);
+        console.log(result);
         workerPool.terminate();
-    });
+    }, 42);
 }());
 
 ```
@@ -148,5 +147,5 @@ As you see we can communicate between main thread and async-task using message c
 
 ##Conclusion
 
-That we viewed the basic of the library, we seen how write parralel program with it and how using message communication system. The use of the library must be for the long task that need long time of execution like load a large file, process image, some huge computation, raytracing and many i have missed.
+That we viewed the basic of the library, we seen how write parralel program with it and how using message communication system. The use of the library must be for the long task that need long time of execution like load a large file, process image, some huge computation, raytracing and many i miss.
 
